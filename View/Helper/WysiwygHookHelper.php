@@ -18,7 +18,7 @@ class WysiwygHookHelper extends AppHelper {
                 return;
             }
 
-            switch (Configure::read('Modules.wysiwyg.settings.editor')){
+            switch (Configure::read('Modules.Wysiwyg.settings.editor')){
                 case 'ckeditor': 
                     default:
                         $data['options']['class'] = "{$data['options']['class']} ckeditor";
@@ -48,7 +48,7 @@ class WysiwygHookHelper extends AppHelper {
 
     public function javascripts_alter(&$js) {
         if (isset($this->_View->viewVars['wysiwygCount']) && $this->_View->viewVars['wysiwygCount'] > 0) {
-            switch (Configure::read('Modules.wysiwyg.settings.editor')) {
+            switch (Configure::read('Modules.Wysiwyg.settings.editor')) {
                 case 'ckeditor': 
                     default:
                         $js['file'][] = '/wysiwyg/js/ckeditor/ckeditor.js';
@@ -113,9 +113,9 @@ class WysiwygHookHelper extends AppHelper {
         }
     }
 
-    public function stylesheets_alter($css) { 
+    public function stylesheets_alter(&$css) { 
         if (isset($this->_View->viewVars['wysiwygCount']) && $this->_View->viewVars['wysiwygCount'] > 0) {
-            switch (Configure::read('Modules.wysiwyg.settings.editor')) {
+            switch (Configure::read('Modules.Wysiwyg.settings.editor')) {
                 case 'markitup':
                     $css['all'][] = '/wysiwyg/js/markitup/skins/simple/style.css';
                     $css['all'][] = '/wysiwyg/js/markitup/sets/default/style.css';
