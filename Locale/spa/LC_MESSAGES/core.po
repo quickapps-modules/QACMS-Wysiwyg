@@ -14,3 +14,9 @@ msgstr ""
 "X-Poedit-Basepath: ../../../\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid "Editor"
+msgstr "Editor"
+
+msgid "Save all"
+msgstr "Guardar todo"
+
