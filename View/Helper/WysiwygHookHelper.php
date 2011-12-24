@@ -58,7 +58,7 @@ class WysiwygHookHelper extends AppHelper {
                     $js['file'][] = '/wysiwyg/js/markitup/jquery.markitup.js';
                     $js['file'][] = '/wysiwyg/js/markitup/sets/default/set.js';
                     $scriptURL = $this->_View->Html->url('/wysiwyg/javascript/get_file/?file=tiny_mce/tiny_mce.js', true);
-                    $js['embed'][] ="
+                    $js['inline'][] ="
                         $().ready(function() {
                             $('textarea.markitup').markItUp(mySettings);
                         });
@@ -68,7 +68,7 @@ class WysiwygHookHelper extends AppHelper {
                 case 'tinymce':
                     $js['file'][] = '/wysiwyg/javascript/get_file/tiny_mce/jquery.tinymce.js';
                     $scriptURL = $this->_View->Html->url('/wysiwyg/javascript/get_file/tiny_mce/tiny_mce.js');
-                    $js['embed'][] = "
+                    $js['inline'][] = "
                         $().ready(function() {
                             $('textarea.tinymce').tinymce({
                                 // Location of TinyMCE script
@@ -101,7 +101,7 @@ class WysiwygHookHelper extends AppHelper {
 
                 case 'whizzywig':
                     $js['file'][] = 'http://unverse.net/whizzery/whizzywig.js';
-                    $js['embed'][] = "
+                    $js['inline'][] = "
                         $().ready(function() {
                             $('textarea.whizzywig').each(function(){
                                 makeWhizzyWig(this.id);
