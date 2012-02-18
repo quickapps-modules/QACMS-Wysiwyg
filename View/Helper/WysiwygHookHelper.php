@@ -11,7 +11,6 @@
  * @link     http://www.quickapps.es
  */
 class WysiwygHookHelper extends AppHelper {
-	
     public function form_textarea_alter(&$data) {
         if (isset($data['options']['type']) &&  $data['options']['type'] == 'textarea') {
             if (!isset($data['options']['class']) || strpos('full', $data['options']['class']) === false) {
@@ -19,7 +18,7 @@ class WysiwygHookHelper extends AppHelper {
             }
 
             switch (Configure::read('Modules.Wysiwyg.settings.editor')){
-                case 'ckeditor': 
+                case 'ckeditor':
                     default:
                         $data['options']['class'] = "{$data['options']['class']} ckeditor";
                 break;
@@ -49,17 +48,17 @@ class WysiwygHookHelper extends AppHelper {
     public function javascripts_alter(&$js) {
         if (isset($this->_View->viewVars['wysiwygCount']) && $this->_View->viewVars['wysiwygCount'] > 0) {
             switch (Configure::read('Modules.Wysiwyg.settings.editor')) {
-                case 'ckeditor': 
+                case 'ckeditor':
                     default:
                         $js['file'][] = '/wysiwyg/js/ckeditor/ckeditor.js';
+                        $js['inline'][] = "$(document).ready(function () { CKEDITOR.config.entities = false; });";
                 break;
 
                 case 'markitup':
                     $js['file'][] = '/wysiwyg/js/markitup/jquery.markitup.js';
                     $js['file'][] = '/wysiwyg/js/markitup/sets/default/set.js';
-                    $scriptURL = $this->_View->Html->url('/wysiwyg/javascript/get_file/?file=tiny_mce/tiny_mce.js', true);
-                    $js['inline'][] ="
-                        $().ready(function() {
+                    $js['inline'][] = "
+                        $(document).ready(function() {
                             $('textarea.markitup').markItUp(mySettings);
                         });
                     ";
@@ -67,9 +66,9 @@ class WysiwygHookHelper extends AppHelper {
 
                 case 'tinymce':
                     $js['file'][] = '/wysiwyg/javascript/get_file/tiny_mce/jquery.tinymce.js';
-                    $scriptURL = $this->_View->Html->url('/wysiwyg/javascript/get_file/tiny_mce/tiny_mce.js');
+                    $scriptURL = $this->_View->Html->url('/wysiwyg/javascript/get_file/tiny_mce/tiny_mce.js', true);
                     $js['inline'][] = "
-                        $().ready(function() {
+                        $(document).ready(function() {
                             $('textarea.tinymce').tinymce({
                                 // Location of TinyMCE script
                                 script_url : '{$scriptURL}',
@@ -85,7 +84,7 @@ class WysiwygHookHelper extends AppHelper {
                                 relative_urls : false,
                                 debug : true,
                                 strict_loading_mode : 1,
-                                
+
                                 // Theme options
                                 theme_advanced_buttons1 : 'undo,redo,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,fontselect,fontsizeselect',
                                 theme_advanced_buttons2 : 'link,unlink,image,|,code,|,media,|,forecolor,backcolor,|,charmap',
@@ -93,7 +92,7 @@ class WysiwygHookHelper extends AppHelper {
                                 theme_advanced_toolbar_location : 'top',
                                 theme_advanced_toolbar_align : 'left',
                                 theme_advanced_resizing : true,
-                                theme_advanced_resize_horizontal : true                                
+                                theme_advanced_resize_horizontal : true
                             });
                         });
                     ";
@@ -108,12 +107,12 @@ class WysiwygHookHelper extends AppHelper {
                             });
                         });
                     ";
-                break;       
+                break;
             }
         }
     }
 
-    public function stylesheets_alter(&$css) { 
+    public function stylesheets_alter(&$css) {
         if (isset($this->_View->viewVars['wysiwygCount']) && $this->_View->viewVars['wysiwygCount'] > 0) {
             switch (Configure::read('Modules.Wysiwyg.settings.editor')) {
                 case 'markitup':
