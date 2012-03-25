@@ -8,56 +8,46 @@ class JavascriptController extends WysiwygAppController {
         parent::beforeFilter();
     }
 
-    # file must be a relative to wysiwyg/webroot/js/
+    // file must be a relative to wysiwyg/webroot/js/
     public function get_file() {
-        $file = implode(DS, func_get_args());
+        $file = CakePlugin::path('Wysiwyg') . 'webroot' . DS . 'js' . DS . implode(DS, func_get_args());
 
-        if ($file) {
-            $file = urldecode($file);
-            $file = preg_replace('/\/{2,}/', '',  "//{$file}//");
-            $file = str_replace('/', DS, $file);
-            $pos = strpos($file, '..');
+        if (is_file($file)) {
+            Configure::write('debug', 0);
 
-            if ($pos === false) {
-                if (is_file(CakePlugin::path('Wysiwyg') . 'webroot' . DS . 'js' . DS . $file)) {
-                    $info = pathinfo(CakePlugin::path('Wysiwyg') . 'webroot' . DS . 'js' . DS . $file);
+            $info = pathinfo($file);
 
-                    if (in_array($info['extension'], array('jpeg', 'tiff', 'jpg', 'png', 'gif'))) {
-                        $fullPath = CakePlugin::path('Wysiwyg') . 'webroot' . DS . 'js' . DS . $file;
-                        $info = pathinfo($fullPath);
-                        $this->viewClass = 'Media';
-                        $params = array(
-                            'id' => $this->__fileName($fullPath) . ".{$info['extension']}",
-                            'name' => $this->__fileName($fullPath),
-                            'download' => false,
-                            'extension' => $info['extension'],
-                            'path' => str_replace($this->__fileName($fullPath) . ".{$info['extension']}", '', $fullPath)
-                        );
-                        
-                        $this->set($params);
-                    } else {
-                        readfile(CakePlugin::path('Wysiwyg') . 'webroot' . DS . 'js' . DS . $file);
-                        die;
-                    }
-                }
+            if (in_array($info['extension'], array('jpeg', 'tiff', 'jpg', 'png', 'gif'))) {
+                $info = pathinfo($file);
+                $this->viewClass = 'Media';
+                $params = array(
+                    'id' => $this->__fileName($file) . ".{$info['extension']}",
+                    'name' => $this->__fileName($file),
+                    'download' => false,
+                    'extension' => $info['extension'],
+                    'path' => str_replace($this->__fileName($file) . ".{$info['extension']}", '', $file)
+                );
+
+                $this->set($params);
             } else {
-                throw new NotFoundException(__t('File not found') );
+                header('Content-type: '. $this->response->type($info['extension']));
+                die(readfile($file));
             }
         } else {
-            throw new NotFoundException(__t('File not found') );
+            die('invalid file: ' . $file);
         }
     }
 
     public function __fileName($filepath){
         preg_match('/[^?]*/', $filepath, $matches);
         $string = $matches[0];
-        #split the string by the literal dot in the filename
+        // split the string by the literal dot in the filename
         $pattern = preg_split('/\./', $string, -1, PREG_SPLIT_OFFSET_CAPTURE);
-        #get the last dot position
+        // get the last dot position
         $lastdot = $pattern[count($pattern)-1][1];
-        #now extract the filename using the basename function
+        // now extract the filename using the basename function
         $filename = basename(substr($string, 0, $lastdot-1));
-        #return the filename part
+        // return the filename part
         return $filename;
     }   
 }

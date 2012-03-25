@@ -27,6 +27,10 @@ class WysiwygHookHelper extends AppHelper {
                     $data['options']['class'] = "{$data['options']['class']} markitup";
                 break;
 
+                case 'nicedit':
+                    $data['options']['class'] = "{$data['options']['class']} nicedit";
+                break;
+
                 case 'tinymce':
                     $data['options']['class'] = "{$data['options']['class']} tinymce";
                 break;
@@ -64,9 +68,30 @@ class WysiwygHookHelper extends AppHelper {
                     ";
                 break;
 
+                case 'nicedit':
+                    $js['file'][] = '/wysiwyg/js/nicedit/nicEdit.js';
+                    $js['inline'][] = "
+                        $(document).ready(function() {
+                            $('.nicedit').each(function() {
+                                new nicEditor({iconsPath : '" . Router::url('/wysiwyg/js/nicedit/nicEditorIcons.gif') . "'}).panelInstance($(this).attr('id'));
+                            });
+                        });
+                    ";
+                break;
+
                 case 'tinymce':
                     $js['file'][] = '/wysiwyg/javascript/get_file/tiny_mce/jquery.tinymce.js';
-                    $scriptURL = $this->_View->Html->url('/wysiwyg/javascript/get_file/tiny_mce/tiny_mce.js', true);
+                    $scriptURL = Router::url('/wysiwyg/javascript/get_file/tiny_mce/tiny_mce.js', true);
+                    $mediaManager = '';
+
+                    if (Configure::read('Modules.Mediamanager')) {
+                        $mediaManager = 'file_browser_callback : function(field_name, url, type, win) {';
+                        $mediaManager .= "var w = window.open('" . Router::url('/admin/mediamanager/connector/wysiwyg_browser/tinymce/', true) . "', null, 'width=600,height=500');";
+                        $mediaManager .= "w.tinymceFileField = field_name;";
+                        $mediaManager .= "w.tinymceFileWin = win;";
+                        $mediaManager .= "}, ";
+                    }
+
                     $js['inline'][] = "
                         $(document).ready(function() {
                             $('textarea.tinymce').tinymce({
@@ -75,22 +100,26 @@ class WysiwygHookHelper extends AppHelper {
 
                                 // General options
                                 theme : 'advanced',
-                                plugins : 'searchreplace,contextmenu,paste,xhtmlxtras,media',
+                                plugins : 'pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras',
                                 verify_html : false,
                                 cleanup_on_startup : false,
                                 apply_source_formatting : true,
                                 gecko_spellcheck : true,
                                 convert_urls : false,
                                 relative_urls : false,
-                                debug : true,
+                                debug : false,
                                 strict_loading_mode : 1,
+                                {$mediaManager}
 
                                 // Theme options
-                                theme_advanced_buttons1 : 'undo,redo,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,fontselect,fontsizeselect',
-                                theme_advanced_buttons2 : 'link,unlink,image,|,code,|,media,|,forecolor,backcolor,|,charmap',
-                                theme_advanced_buttons3 : '',
+                                theme_advanced_buttons1 : 'save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect',
+                                theme_advanced_buttons2 : 'cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor',
+                                theme_advanced_buttons3 : 'tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,media,advhr,|,print,|,ltr,rtl,|,fullscreen',
+                                theme_advanced_buttons4 : 'insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,pagebreak',
+                                
                                 theme_advanced_toolbar_location : 'top',
                                 theme_advanced_toolbar_align : 'left',
+                                theme_advanced_statusbar_location : 'bottom',
                                 theme_advanced_resizing : true,
                                 theme_advanced_resize_horizontal : true
                             });

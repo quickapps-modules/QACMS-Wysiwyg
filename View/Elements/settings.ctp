@@ -6,9 +6,10 @@
                 'label' => __t('Editor'),
                 'options' => array(
                     'ckeditor' => 'CKEditor',
+                    'nicedit' => 'NicEdit',
                     'markitup' => 'MarkItUp',
                     'whizzywig' => 'Whizzywig',
-                    //'tinymce' => 'TinyMCE' --> TODO
+                    'tinymce' => 'TinyMCE'
                 )
             )
         );
