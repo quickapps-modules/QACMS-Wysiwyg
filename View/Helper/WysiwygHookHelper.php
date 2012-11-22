@@ -266,7 +266,7 @@ class WysiwygHookHelper extends AppHelper {
 		$o = array();
 		$nodes = $Node->find('all',
 			array(
-				'fields' => array('title', 'slug', 'node_type_id'),
+				'fields' => array('id', 'title', 'slug', 'node_type_id'),
 				'recursive' => -1,
 				'order' => array('modified' => 'DESC')
 				)
