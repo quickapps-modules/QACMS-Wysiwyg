@@ -13,7 +13,7 @@
 class WysiwygHookHelper extends AppHelper {
     public function form_textarea_alter(&$data) {
         if (isset($data['options']['type']) &&  $data['options']['type'] == 'textarea') {
-            if (!isset($data['options']['class']) || strpos('full', $data['options']['class']) === false) {
+            if (!isset($data['options']['class']) || strpos($data['options']['class'], 'full') === false) {
                 return;
             }
 
